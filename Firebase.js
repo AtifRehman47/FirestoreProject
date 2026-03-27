@@ -1,6 +1,11 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth , createUserWithEmailAndPassword , signInWithEmailAndPassword , onAuthStateChanged , signOut} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+// firestore 
+
+import { getFirestore , doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
 const firebaseConfig = {
     apiKey: "AIzaSyDrgCgxp8-MQwzY5uRxP31Z0YHdQgPiaYE",
     authDomain: "datastoreproject-244b9.firebaseapp.com",
@@ -14,14 +19,27 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
 
+// Initialize firestore 
 
-let Signuphandler = (email,password)=>{
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app);
+
+
+let Signuphandler = (username,email,password)=>{
 
 createUserWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
     // Signed up 
     const user = userCredential.user;
     console.log(user);
+    UserAdd(
+      {
+        username:username,
+         email:email, 
+         password:password
+      },
+      user.uid
+    )
     
     
   })
@@ -90,4 +108,18 @@ signOut(auth).then(() => {
 });
 }
 
-export  {Signuphandler , Loginhandler , CurrentUser , LogoutUser}
+// firestore working 
+
+let UserAdd = async(userdetails,uniqId)=>{
+
+  try {
+    // Add a new document in collection "cities"
+    await setDoc(doc(db, "user", uniqId), userdetails);
+  } catch (error) {
+    console.log(error,'error message');
+    
+  }
+
+}
+
+export  {Signuphandler , Loginhandler , CurrentUser , LogoutUser , UserAdd}

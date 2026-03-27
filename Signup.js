@@ -8,5 +8,5 @@ let Password = document.querySelector('.password');
 let signupbtn = document.querySelector('.signupbtn');
 
 signupbtn.addEventListener('click',()=>{
-    Signuphandler(InputEmail.value,Password.value)
+    Signuphandler( InputName.value , InputEmail.value , Password.value)
 })
